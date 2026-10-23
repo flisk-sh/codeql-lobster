@@ -1,0 +1,52 @@
+# Creates the GitHub release for a version tag. It does not publish to the Marketplace:
+# GitHub only allows that from the release page, after accepting the Marketplace terms.
+# See "Releasing" in the README.
+name: 🚀 Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: 🧪 Verify tag and run tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Check the tag matches TOOL_VERSION
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's/^TOOL_VERSION = "\(.*\)"$/\1/p' lobster_analyze.py)
+          if [ -z "$version" ]; then
+            echo "TOOL_VERSION not found in lobster_analyze.py" >&2
+            exit 1
+          fi
+          if [ "$TAG" != "v$version" ]; then
+            echo "Tag $TAG does not match TOOL_VERSION $version (expected v$version)" >&2
+            exit 1
+          fi
+      - name: Run unit tests
+        run: python3 -m unittest tests.test_rules -v
+
+  release:
+    name: 🚀 Create GitHub release
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Create release with generated notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" --generate-notes --verify-tag --title "$TAG"

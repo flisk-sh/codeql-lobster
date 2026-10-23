@@ -1,0 +1,35 @@
+# Runs this Action from the checked-out repository so a broken action.yml or composite step fails CI before a release.
+name: 🔬 Self-test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  self-test:
+    name: 🔬 Run the Action on the clean fixtures
+    # The Action uploads SARIF, which needs security-events: write. Fork pull requests only get a read-only token, so skip them.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: ./
+        with:
+          patterns: tests/fixtures/good/*.lobster
+          category: /language:lobster-self-test
+          fail-on-findings: "false"

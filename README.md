@@ -68,6 +68,12 @@ Python 3.9 or newer is enough. There are no dependencies.
 
 Early. The rule set is small, each rule has tests, and the rules come from the standard library docs at [aardappel/lobster](https://github.com/aardappel/lobster). The action has not yet run from a caller on GitHub.
 
+## Releasing
+
+1. Bump `TOOL_VERSION` in `lobster_analyze.py` and merge it to `main`.
+2. Tag the merge commit `vX.Y.Z` (matching `TOOL_VERSION`) and push the tag. The release workflow checks the tag, runs the tests and creates the GitHub release with generated notes.
+3. Open the created release, choose Edit, and tick "Publish this Action to the GitHub Marketplace". GitHub only allows this from the release page, after accepting the Marketplace terms, so the workflow cannot do it.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
