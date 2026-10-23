@@ -21,7 +21,7 @@ COMMAND_FNS = {"launch_subprocess"}
 # ---------------------------------------------------------------------------
 
 TOOL_NAME = "codeql-lobster"
-TOOL_VERSION = "0.1.0"
+TOOL_VERSION = "0.2.1"
 SARIF_SCHEMA = "https://json.schemastore.org/sarif-2.1.0.json"
 
 ALL_RULES = {
