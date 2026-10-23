@@ -2,6 +2,8 @@
 
 > **Unofficial community project.** Not made, endorsed or supported by GitHub, the CodeQL team or the authors of Lobster. It does not use CodeQL: it reads Lobster source with a small lexer and reports through SARIF.
 
+**Published on the GitHub Marketplace:** [Lobster Analyzer for Code Scanning (unofficial)](https://github.com/marketplace/actions/lobster-analyzer-for-code-scanning-unofficial).
+
 Lobster here is the programming language at [aardappel/lobster](https://github.com/aardappel/lobster).
 
 Static checks for `*.lobster` files that write [SARIF 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html), so results appear under Code scanning next to CodeQL.
