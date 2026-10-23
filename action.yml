@@ -1,5 +1,9 @@
-name: CodeQL Lobster (unofficial)
-description: Unofficial community Lobster checks that upload SARIF to GitHub Code scanning. Not made or endorsed by GitHub, the CodeQL team or the Lobster authors.
+name: Lobster Analyzer for Code Scanning (unofficial)
+description: Unofficial Lobster checks that upload SARIF to Code scanning. Not made by GitHub.
+
+branding:
+  icon: shield
+  color: blue
 
 inputs:
   patterns:
