@@ -20,7 +20,7 @@ CHECKED_FNS = set()
 COMMAND_FNS = {"launch_subprocess"}
 # ---------------------------------------------------------------------------
 
-TOOL_NAME = "codeql-lobster (unofficial)"
+TOOL_NAME = "codeql-lobster"
 TOOL_VERSION = "0.1.0"
 SARIF_SCHEMA = "https://json.schemastore.org/sarif-2.1.0.json"
 

@@ -1,5 +1,5 @@
-name: Lobster Analyzer for Code Scanning (unofficial)
-description: Unofficial Lobster checks that upload SARIF to Code scanning. Not made by GitHub.
+name: Lobster Analyzer for Code Scanning
+description: Lobster checks that upload SARIF to Code scanning. Not made by GitHub.
 
 branding:
   icon: shield

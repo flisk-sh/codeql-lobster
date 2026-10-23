@@ -1,8 +1,8 @@
 # codeql-lobster
 
-> **Unofficial community project.** Not made, endorsed or supported by GitHub, the CodeQL team or the authors of Lobster. It does not use CodeQL: it reads Lobster source with a small lexer and reports through SARIF.
+> **Community project.** Not made, endorsed or supported by GitHub, the CodeQL team or the authors of Lobster. It does not use CodeQL: it reads Lobster source with a small lexer and reports through SARIF.
 
-**Published on the GitHub Marketplace:** [Lobster Analyzer for Code Scanning (unofficial)](https://github.com/marketplace/actions/lobster-analyzer-for-code-scanning-unofficial).
+**Published on the GitHub Marketplace:** [Lobster Analyzer for Code Scanning](https://github.com/marketplace/actions/lobster-analyzer-for-code-scanning-unofficial).
 
 Lobster here is the programming language at [aardappel/lobster](https://github.com/aardappel/lobster).
 
