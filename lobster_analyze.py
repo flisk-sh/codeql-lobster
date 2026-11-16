@@ -318,8 +318,12 @@ def main(argv=None):
     parser.add_argument("--fail-on-findings", action="store_true", help="exit 1 when any result is reported")
     args = parser.parse_args(argv)
 
+    if not os.path.isdir(args.root):
+        parser.error(f"--root must point to an existing directory: {args.root}")
     root = os.path.abspath(args.root)
     files = discover(root, args.patterns or DEFAULT_PATTERNS)
+    if not files:
+        print(f"Warning: no files matched the scan patterns under {root}.", file=sys.stderr)
     sarif = build_sarif(root, files)
     with open(args.output, "w", encoding="utf-8") as handle:
         json.dump(sarif, handle, indent=2)
