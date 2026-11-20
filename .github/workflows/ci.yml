@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Run unit tests
-        run: python3 -m unittest tests.test_rules -v
+        run: python3 -m unittest discover -s tests -v
 
   actionlint:
     name: 🔎 Lint workflows
