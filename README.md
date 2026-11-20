@@ -78,6 +78,8 @@ Early. The rule set is small, each rule has tests, and the rules come from the s
 2. Tag the merge commit `vX.Y.Z` (matching `TOOL_VERSION`) and push the tag. The release workflow checks the tag, runs the tests and creates the GitHub release with generated notes.
 3. Open the created release, choose Edit, and tick "Publish this Action to the GitHub Marketplace". GitHub only allows this from the release page, after accepting the Marketplace terms, so the workflow cannot do it.
 
+Re-running the release workflow for a tag is safe: the create step checks for an existing release and skips it with a notice. The historical red `v0.2.1` run was a duplicate create after the release had already been published; the published artifact was correct and no action is needed.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
