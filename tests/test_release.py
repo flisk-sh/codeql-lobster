@@ -21,13 +21,17 @@ class FakeGh:
         action = args[1]
         if action == "view":
             self.views += 1
-            if self.scenario == "exists" or (self.scenario == "race" and self.views > 1):
+            if self.scenario == "view_error":
+                return Result(1, "", "HTTP 500: Internal Server Error")
+            if self.scenario == "exists" or (
+                self.scenario in ("race", "create_500_then_exists") and self.views > 1
+            ):
                 return Result(0, '{"tagName":"v0.2.1"}')
             return Result(1, "", "release not found")
         if action == "create":
             if self.scenario == "race":
-                return Result(1, "", "HTTP 422: Validation Failed")
-            if self.scenario == "api_error":
+                return Result(1, "", "HTTP 422: a release with the same tag name already exists")
+            if self.scenario in ("api_error", "create_500_then_exists"):
                 return Result(1, "", "HTTP 500: Internal Server Error")
             return Result(0, "Created release")
         raise AssertionError(f"unexpected gh call: {args}")
@@ -63,7 +67,18 @@ class ReleaseStepTests(unittest.TestCase):
         code, output, calls = self.run_step("api_error")
         self.assertEqual(code, 1)
         self.assertIn("HTTP 500", output)
-        self.assertEqual([c[1] for c in calls], ["view", "create", "view"])
+        self.assertEqual([c[1] for c in calls], ["view", "create"])
+
+    def test_view_failure_is_not_treated_as_missing(self):
+        code, output, calls = self.run_step("view_error")
+        self.assertEqual(code, 1)
+        self.assertIn("HTTP 500", output)
+        self.assertEqual([c[1] for c in calls], ["view"])
+
+    def test_create_500_is_not_masked_by_a_later_successful_view(self):
+        code, output, _ = self.run_step("create_500_then_exists")
+        self.assertEqual(code, 1)
+        self.assertIn("HTTP 500", output)
 
     def test_missing_tag_is_a_usage_error(self):
         fake = FakeGh("missing")

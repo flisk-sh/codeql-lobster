@@ -33,15 +33,30 @@ def _run_gh(*args: str) -> Result:
     return Result(process.returncode, process.stdout, process.stderr)
 
 
+def _is_not_found(result: Result) -> bool:
+    text = (result.stderr + result.stdout).lower()
+    return "release not found" in text or "http 404" in text
+
+
+def _is_already_exists(result: Result) -> bool:
+    text = (result.stderr + result.stdout).lower()
+    return "already exists" in text or "already_exists" in text
+
+
 def create_release(tag: str, run_gh: Runner, out: Callable[[str], None] = print) -> int:
     """Return 0 if the release exists or was created, 1 only on a real failure."""
     if not tag:
         out("TAG is required")
         return 2
 
-    if run_gh("release", "view", tag, "--json", "tagName").returncode == 0:
+    viewed = run_gh("release", "view", tag, "--json", "tagName")
+    if viewed.returncode == 0:
         out(f"Release {tag} already exists; skipping creation.")
         return 0
+    if not _is_not_found(viewed):
+        # Not a confirmed "missing": an API or auth failure must not be papered over.
+        out(viewed.stderr.strip() or f"Could not check release {tag}")
+        return 1
 
     created = run_gh(
         "release", "create", tag,
@@ -50,8 +65,10 @@ def create_release(tag: str, run_gh: Runner, out: Callable[[str], None] = print)
     if created.returncode == 0:
         return 0
 
-    # The release may have appeared between the check above and the create call.
-    if run_gh("release", "view", tag, "--json", "tagName").returncode == 0:
+    # Only an already-exists failure, confirmed by a successful view, counts as a race.
+    if _is_already_exists(created) and run_gh(
+        "release", "view", tag, "--json", "tagName"
+    ).returncode == 0:
         out(f"Release {tag} was created concurrently; treating as already released.")
         return 0
 
